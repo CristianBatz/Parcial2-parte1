@@ -1,6 +1,5 @@
 import tkinter as tk
 
-
 class Candidatas:
     def __init__(self, codigo, nombre, edad, institucion, municipio):
         self.codigo = codigo
@@ -203,15 +202,58 @@ class ConcursoApp:
         self.ventana.config(menu=barra)
 
     def inscribir_candidata(self):
-        print("Se abrió la ventana: Inscribir Banda")
-        tk.Toplevel(self.ventana).title("Inscribir candidata")
+        print("Se abrió la ventana: Inscribir candidata")
+        ventana_inscripcion1 = tk.Toplevel(self.ventana)
+        ventana_inscripcion1.title("Inscribir candidata")
+        ventana_inscripcion1.geometry("500x300")
+        tk.Label(ventana_inscripcion1,text="Nombre de la candidata").pack(pady=5)
+        entrada_nombre = tk.Entry(ventana_inscripcion1)
+        entrada_nombre.pack(pady=5)
+
+        tk.Label(ventana_inscripcion1,text="Edad de la candidata").pack(pady=5)
+        entrada_edad = tk.Entry(ventana_inscripcion1)
+        entrada_edad.pack(pady=5)
+
+        tk.Label(ventana_inscripcion1,text="Instituto de la candidata").pack(pady=5)
+        instituto = tk.Entry(ventana_inscripcion1)
+        instituto.pack(pady=5)
+
+        tk.Label(ventana_inscripcion1,text="Municipio de la candidata").pack(pady=5)
+        municipio = tk.Entry(ventana_inscripcion1)
+        municipio.pack(pady=5)
+
 
     def inscribir_jurado(self):
         print("Se abri<UNK> la ventana: Registrar Jurado")
+        ventana_inscripcion2 = tk.Toplevel(self.ventana)
+        ventana_inscripcion2.title("Registrar Jurado")
+        ventana_inscripcion2.geometry("500x300")
+        tk.Label(ventana_inscripcion2,text="Nombre del jurado").pack(pady=5)
+        entrada_nombre = tk.Entry(ventana_inscripcion2)
+        entrada_nombre.pack(pady=5)
+
+        tk.Label(ventana_inscripcion2,text="Especialidad del jurado").pack(pady=5)
+        entrada_especialidad = tk.Entry(ventana_inscripcion2)
+        entrada_especialidad.pack(pady=5)
 
     def registrar_evaluacion(self):
         print("Se abrió la ventana: Registrar Evaluación")
-        tk.Toplevel(self.ventana).title("Registrar Evaluación")
+        ventana_inscripcion3 = tk.Toplevel(self.ventana)
+        ventana_inscripcion3.title("Registrar Jurado")
+        ventana_inscripcion3.geometry("500x300")
+        tk.Label(ventana_inscripcion3,text="Cultura").pack(pady=5)
+        entrada_Cultura = tk.Entry(ventana_inscripcion3)
+        entrada_Cultura.pack(pady=5)
+
+        tk.Label(ventana_inscripcion3,text="Proyecciones").pack(pady=5)
+        entrada_Proyecciones = tk.Entry(ventana_inscripcion3)
+        entrada_Proyecciones.pack(pady=5)
+
+        tk.Label(ventana_inscripcion3,text="Entrevista").pack(pady=5)
+        entrada_entrevista = tk.Entry(ventana_inscripcion3)
+        entrada_entrevista.pack(pady=5)
+
+
 
     def listar_candidatas(self):
         print("Se abrió la ventana: Listado de candidatas")
