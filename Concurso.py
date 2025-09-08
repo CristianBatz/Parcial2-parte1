@@ -1,3 +1,6 @@
+import tkinter as tk
+
+
 class Candidatas:
     def __init__(self, codigo, nombre, edad, institucion, municipio):
         self.codigo = codigo
@@ -168,7 +171,58 @@ class Ordenamiento:
 
         return self.quick_sort(menores) + [pivote] + iguales + self.quick_sort(mayores)
 
+class ConcursoApp:
+    def __init__(self):
+        self.ventana = tk.Tk()
+        self.ventana.title("Concurso de Reinas de Independencia - Quetzaltenango")
+        self.ventana.geometry("500x300")
 
+        self.menu()
+
+        tk.Label(
+            self.ventana,
+            text="Sistema de Inscripción y Evaluación de Reinas de Independencia\nConcurso 2025- Quetzaltenango",
+            font=("Arial", 12, "bold"),
+            justify="center"
+        ).pack(pady=50)
+
+        self.ventana.mainloop()
+
+    def menu(self):
+        barra = tk.Menu(self.ventana)
+        opciones = tk.Menu(barra, tearoff=0)
+        opciones.add_command(label="Inscribir candidata", command=self.inscribir_candidata)
+        opciones.add_command(label="Registrar jurado", command=self.inscribir_jurado)
+        opciones.add_command(label="Registrar Evaluación", command=self.registrar_evaluacion)
+        opciones.add_command(label="Listar Candidatas", command=self.listar_candidatas)
+        opciones.add_command(label="Ver Ranking", command=self.ver_ranking)
+        opciones.add_separator()
+        opciones.add_command(label="Salir", command=self.ventana.quit)
+        barra.add_cascade(label="Opciones", menu=opciones)
+        self.ventana.config(menu=barra)
+
+    def inscribir_candidata(self):
+        print("Se abrió la ventana: Inscribir Banda")
+        tk.Toplevel(self.ventana).title("Inscribir candidata")
+
+    def inscribir_jurado(self):
+        print("Se abri<UNK> la ventana: Registrar Jurado")
+
+    def registrar_evaluacion(self):
+        print("Se abrió la ventana: Registrar Evaluación")
+        tk.Toplevel(self.ventana).title("Registrar Evaluación")
+
+    def listar_candidatas(self):
+        print("Se abrió la ventana: Listado de candidatas")
+        tk.Toplevel(self.ventana).title("Listado de candidatas")
+
+    def ver_ranking(self):
+        print("Se abrió la ventana: Ranking Final")
+        tk.Toplevel(self.ventana).title("Ranking Final")
+
+
+if __name__ == "__main__":
+    ConcursoApp()
 
 
 
