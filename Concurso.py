@@ -145,6 +145,17 @@ class Concurso:
             puntaje = self.puntaje_total_candidata(codigo)
             ranking.append((nombre, puntaje))
 
+        ordenamiento = Ordenamiento()
+        ranking_ordenado = ordenamiento.quick_sort(ranking)
+
+        print("=== Ranking ===")
+        for i,(nombre,puntaje) in enumerate(ranking_ordenado,start = 1):
+            print(f"{i},{nombre}, Puntaje {puntaje:.2f}")
+
+        if ranking_ordenado:
+            print(f"\n🏆 GANADORA: {ranking_ordenado[0][0]} con {ranking_ordenado[0][1]:.2f} puntos")
+
+
 class Ordenamiento:
     def quick_sort(self,candidata):
         if len(candidata) <= 1:
@@ -156,6 +167,8 @@ class Ordenamiento:
         menores = [b for b in candidata[1:] if b.promedio < pivote.promedio]
 
         return self.quick_sort(menores) + [pivote] + iguales + self.quick_sort(mayores)
+
+
 
 
 
