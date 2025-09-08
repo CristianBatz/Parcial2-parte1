@@ -103,6 +103,7 @@ class Concurso:
     def __init__(self):
         self.jurado = {}
         self.candidata = {}
+        self.calificaciones = []
 
     def agregar_candidata(self,codigo, nombre, edad, institucion, municipio):
         self.candidata[codigo]={
