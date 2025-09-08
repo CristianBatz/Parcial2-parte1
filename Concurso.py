@@ -60,7 +60,7 @@ class GestionCandidata:
 
 
 class Jurado:
-    criterios = ["cultura", "proyecciones", "escencia", "entrevista"]
+    criterios = ["cultura", "proyecciones", "escenica", "entrevista"]
 
     def __init__(self, codigo_Jurado, nombre):
         self.nombre = nombre
