@@ -62,7 +62,7 @@ class GestionCandidata:
 
 
 class Jurado:
-    criterios = ["cultura", "proyecciones", "escenica", "entrevista"]
+    criterios = ["cultura", "proyecciones", "entrevista"]
 
     def __init__(self, codigo_Jurado, nombre):
         self.nombre = nombre
@@ -126,6 +126,7 @@ class Concurso:
 
         if codigo_candidata not in self.candidata:
             print(f"La candidata {codigo_candidata} no esta registrada")
+            return
 
         jurado_info = self.jurado[nombre_jurado]
         candidata_info = self.candidata[codigo_candidata]
@@ -151,6 +152,10 @@ class Concurso:
         ordenamiento = Ordenamiento()
         ranking_ordenado = ordenamiento.quick_sort(ranking)
 
+        if not ranking_ordenado:
+            print("No hay candidatas registradas en el ranking.")
+            return
+
         print("=== Ranking ===")
         for i,(nombre,puntaje) in enumerate(ranking_ordenado,start = 1):
             print(f"{i},{nombre}, Puntaje {puntaje:.2f}")
@@ -165,9 +170,9 @@ class Ordenamiento:
             return candidata
 
         pivote = candidata[0]
-        mayores = [b for b in candidata[1:] if b.promedio > pivote.promedio]
-        iguales = [b for b in candidata[1:] if b.promedio == pivote.promedio]
-        menores = [b for b in candidata[1:] if b.promedio < pivote.promedio]
+        mayores = [b for b in candidata[1:] if b[1] > pivote[1]]
+        iguales = [b for b in candidata[1:] if b[1] == pivote[1]]
+        menores = [b for b in candidata[1:] if b[1] < pivote[1]]
 
         return self.quick_sort(menores) + [pivote] + iguales + self.quick_sort(mayores)
 
@@ -224,7 +229,7 @@ class ConcursoApp:
 
 
     def inscribir_jurado(self):
-        print("Se abri<UNK> la ventana: Registrar Jurado")
+        print("Se abrio la ventana: Registrar Jurado")
         ventana_inscripcion2 = tk.Toplevel(self.ventana)
         ventana_inscripcion2.title("Registrar Jurado")
         ventana_inscripcion2.geometry("500x300")
@@ -239,7 +244,7 @@ class ConcursoApp:
     def registrar_evaluacion(self):
         print("Se abrió la ventana: Registrar Evaluación")
         ventana_inscripcion3 = tk.Toplevel(self.ventana)
-        ventana_inscripcion3.title("Registrar Jurado")
+        ventana_inscripcion3.title("Registrar evaluacion")
         ventana_inscripcion3.geometry("500x300")
         tk.Label(ventana_inscripcion3,text="Cultura").pack(pady=5)
         entrada_Cultura = tk.Entry(ventana_inscripcion3)
