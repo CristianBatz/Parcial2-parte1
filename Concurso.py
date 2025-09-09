@@ -221,23 +221,44 @@ class ConcursoApp:
         print("Se abrió la ventana: Inscribir candidata")
         ventana_inscripcion1 = tk.Toplevel(self.ventana)
         ventana_inscripcion1.title("Inscribir candidata")
-        ventana_inscripcion1.geometry("500x300")
-        tk.Label(ventana_inscripcion1,text="Nombre de la candidata").pack(pady=5)
+        ventana_inscripcion1.geometry("450x300")
+        tk.Label(ventana_inscripcion1,text="Nombre de la candidata").place(x=30, y=30)
         entrada_nombre = tk.Entry(ventana_inscripcion1)
-        entrada_nombre.pack(pady=5)
+        entrada_nombre.place(x=180, y=30)
 
-        tk.Label(ventana_inscripcion1,text="Edad de la candidata").pack(pady=5)
+        tk.Label(ventana_inscripcion1,text="Edad de la candidata").place(x=30, y=70)
         entrada_edad = tk.Entry(ventana_inscripcion1)
-        entrada_edad.pack(pady=5)
+        entrada_edad.place(x=180, y=70)
 
-        tk.Label(ventana_inscripcion1,text="Instituto de la candidata").pack(pady=5)
+        tk.Label(ventana_inscripcion1,text="Instituto de la candidata").place(x=30, y=110)
         instituto = tk.Entry(ventana_inscripcion1)
-        instituto.pack(pady=5)
+        instituto.place(x=180, y=110)
 
-        tk.Label(ventana_inscripcion1,text="Municipio de la candidata").pack(pady=5)
+        tk.Label(ventana_inscripcion1,text="Municipio de la candidata").place(x=30, y=150)
         municipio = tk.Entry(ventana_inscripcion1)
-        municipio.pack(pady=5)
+        municipio.place(x=180, y=150)
 
+        def guardar():
+            nombre = entrada_nombre.get()
+            try:
+                edad = int(entrada_edad.get())
+            except ValueError:
+                print("Edad inválida")
+                return
+            institucion = instituto.get()
+            municipios = municipio.get()
+
+            if not (20 <= edad <= 30):
+                print(f"La candidata no puede participar por tener {edad} años")
+                return
+
+            codigo = str(len(self.concurso.candidata) + 1)  # autogenerado
+            self.concurso.agregar_candidata(codigo, nombre, edad, institucion, municipio)
+            self.gestion_candidata.guardar_candidata()
+            print(f"Candidata inscrita: {nombre}")
+            ventana_inscripcion1.destroy()
+
+        tk.Button(ventana_inscripcion1, text="Guardar", command=guardar,bg="#4a90e2", relief="raised", bd=4,activebackground="#357ABD", activeforeground="white").place(x=200, y=200)
 
     def inscribir_jurado(self):
         print("Se abrio la ventana: Registrar Jurado")
@@ -252,33 +273,94 @@ class ConcursoApp:
         entrada_especialidad = tk.Entry(ventana_inscripcion2)
         entrada_especialidad.pack(pady=5)
 
+        def guardar():
+            nombre = entrada_nombre.get()
+            especialidad = entrada_especialidad.get()
+            self.concurso.agregar_jurado(nombre, especialidad)
+            self.gestion_jurado.guardar_jurado()
+            print(f"Jurado inscrito: {nombre}")
+            ventana_inscripcion2.destroy()
+
+        tk.Button(ventana_inscripcion2, text="Guardar", command=guardar,
+                  bg="#4a90e2", relief="raised", bd=4,
+                  activebackground="#357ABD", activeforeground="white").pack(pady = 5)
+
     def registrar_evaluacion(self):
         print("Se abrió la ventana: Registrar Evaluación")
         ventana_inscripcion3 = tk.Toplevel(self.ventana)
         ventana_inscripcion3.title("Registrar evaluacion")
-        ventana_inscripcion3.geometry("500x300")
-        tk.Label(ventana_inscripcion3,text="Cultura").pack(pady=5)
+        ventana_inscripcion3.geometry("500x350")
+        tk.Label(ventana_inscripcion3, text="Nombre del jurado").pack(pady=5)
+        entrada_jurado = tk.Entry(ventana_inscripcion3)
+        entrada_jurado.pack()
+
+        tk.Label(ventana_inscripcion3, text="Código de la candidata").pack(pady=5)
+        entrada_codigo = tk.Entry(ventana_inscripcion3)
+        entrada_codigo.pack()
+
+        tk.Label(ventana_inscripcion3,text="Puntuacion Cultura").pack(pady=5)
         entrada_Cultura = tk.Entry(ventana_inscripcion3)
         entrada_Cultura.pack(pady=5)
 
-        tk.Label(ventana_inscripcion3,text="Proyecciones").pack(pady=5)
+        tk.Label(ventana_inscripcion3,text="Puntuacion Proyecciones").pack(pady=5)
         entrada_Proyecciones = tk.Entry(ventana_inscripcion3)
         entrada_Proyecciones.pack(pady=5)
 
-        tk.Label(ventana_inscripcion3,text="Entrevista").pack(pady=5)
+        tk.Label(ventana_inscripcion3,text="Puntuacion Entrevista").pack(pady=5)
         entrada_entrevista = tk.Entry(ventana_inscripcion3)
         entrada_entrevista.pack(pady=5)
+
+        def guardar():
+            nombre_jurado = entrada_jurado.get()
+            codigo_candidata = entrada_codigo.get()
+            try:
+                cultura = int(entrada_Cultura.get())
+                proyeccion = int(entrada_Proyecciones.get())
+                entrevista = int(entrada_entrevista.get())
+                self.concurso.agregar_puntaje(nombre_jurado, codigo_candidata, cultura, proyeccion, entrevista)
+                print(f"Evaluación registrada para candidata {codigo_candidata}")
+            except ValueError:
+                print("Error: ingrese solo números")
+
+            ventana_inscripcion3.destroy()
+
+        tk.Button(ventana_inscripcion3, text="Guardar", command=guardar,bg="#4a90e2", relief="raised", bd=4,activebackground="#357ABD", activeforeground="white").pack(pady=10)
 
 
 
     def listar_candidatas(self):
         print("Se abrió la ventana: Listado de candidatas")
-        tk.Toplevel(self.ventana).title("Listado de candidatas")
+        ventana_listar = tk.Toplevel(self.ventana)
+        ventana_listar.title("Listado de Candidatas")
+        ventana_listar.geometry("500x400")
+
+        tk.Label(ventana_listar,text="--- Candidatas Inscritas ---",font=("Arial", 12, "bold")).pack(pady=5)
+
+        if not self.concurso.candidata:
+            tk.Label(ventana_listar, text="No hay candidatas registradas.").pack()
+        else:
+            for c in self.concurso.candidata.values():
+                info = f"Código: {c.codigo}, Nombre: {c.nombre}, Edad: {c.edad}, Institución: {c.institucion}, Municipio: {c.municipio}, Puntaje: {c.promedio}"
+                tk.Label(ventana_listar, text=info,).pack(pady=2)
 
     def ver_ranking(self):
         print("Se abrió la ventana: Ranking Final")
-        tk.Toplevel(self.ventana).title("Ranking Final")
+        ventana_ranking = tk.Toplevel(self.ventana)
+        ventana_ranking.title("Ranking de Candidatas")
+        ventana_ranking.geometry("500x400")
 
+        tk.Label(ventana_ranking,text="--- Ranking Final ---",font=("Arial", 12, "bold")).pack(pady=5)
+
+        if not self.concurso.candidata:
+            tk.Label(ventana_ranking, text="No hay candidatas evaluadas.").pack()
+        else:
+            ordenador = Ordenamiento()
+            candidatas_ordenadas = ordenador.quick_sort(list(self.concurso.candidata.values()))
+            candidatas_ordenadas.reverse()
+
+            for idx, c in enumerate(candidatas_ordenadas, start=1):
+                info = f"{idx}. {c.nombre} - Puntaje: {c.promedio}"
+                tk.Label(ventana_ranking, text=info).pack(pady=2)
 
 if __name__ == "__main__":
     ConcursoApp()
