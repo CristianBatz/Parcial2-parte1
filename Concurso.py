@@ -13,8 +13,8 @@ class Candidatas:
 
 
 class GestionCandidata:
-    def __init__(self):
-        self.candidatas = {}
+    def __init__(self, concurso):
+        self.concurso = concurso
         self.cargar_Candidatas()
 
     def cargar_Candidatas(self):
@@ -24,7 +24,7 @@ class GestionCandidata:
                     linea = linea.strip()
                     if linea:
                         codigo, nombre, edad, institucion, municipio = linea.split(";")
-                        self.candidatas[codigo] = Candidatas(
+                        self.concurso.agregar_candidata(
                             codigo, nombre, int(edad), institucion, municipio
                         )
             print("Candidatas cargadas.")
@@ -33,9 +33,10 @@ class GestionCandidata:
 
     def guardar_candidata(self):
         with open("candidatas.txt", "w", encoding="utf-8") as archivo:
-            for candidata in self.candidatas.values():
-                archivo.write(f"{candidata.codigo};{candidata.nombre};{candidata.edad};{candidata.institucion};{candidata.municipio}\n")
-
+            for codigo, data in self.concurso.candidata.items():
+                archivo.write(
+                    f"{codigo};{data['nombre']};{data['edad']};{data['institucion']};{data['municipio']}\n"
+                )
     def agregar_candidata(self):
         print("Ingrese los datos de la candidata:")
         codigo = input("Código: ")
@@ -49,26 +50,22 @@ class GestionCandidata:
         institucion = input("Institución: ")
         municipio = input("Municipio: ")
 
-        self.candidatas[codigo] = Candidatas(codigo, nombre, edad, institucion, municipio)
+        self.concurso.agregar_candidata(codigo, nombre, edad, institucion, municipio)
         self.guardar_candidata()
         print(f"Candidata {nombre} registrada con éxito.")
 
     def mostrar_info(self):
-        if not self.candidatas:
+        if not self.concurso.candidata:
             print("No hay candidatas registradas")
         else:
-            for candidata in self.candidatas.values():
-                print(f"Codigo: {candidata.codigo} | Nombre: {candidata.nombre} | Edad: {candidata.edad} | Institución: {candidata.institucion} | Municipio: {candidata.municipio}")
-
+            for codigo, data in self.concurso.candidata.items():
+                print(f"Codigo: {codigo} | Nombre: {data['nombre']} | Edad: {data['edad']} | Institución: {data['institucion']} | Municipio: {data['municipio']}")
 
 class Jurado:
     criterios = ["cultura", "proyecciones", "entrevista"]
 
-    def __init__(self, codigo_Jurado, nombre):
-        self.nombre = nombre
-        self.codigo_Jurado = codigo_Jurado
-        self.jurado = {}
-        self.puntuaje = {}
+    def __init__(self, concurso):
+        self.concurso = concurso
         self.cargar_jurado()
 
     def cargar_jurado(self):
@@ -77,15 +74,26 @@ class Jurado:
                 for linea in archivo:
                     linea = linea.strip()
                     if linea:
-                        codigo_Jurado, nombre = linea.split(";")
-                        self.jurado[codigo_Jurado] = {"nombre": nombre}
+                        nombre, especialidad = linea.split(";")
+                        self.concurso.agregar_jurado(nombre, especialidad)
+            print("Jurados cargados.")
         except FileNotFoundError:
             print("No existe el archivo Jurado.txt, se creará uno nuevo al guardar.")
 
-    def registro_puntuaje(self):
-        for criterio in self.criterios:
-            puntaje = int(input(f"Ingrese la puntuación para {criterio}: "))
-            self.puntuaje[criterio] = puntaje
+    def guardar_jurado(self):
+        with open("Jurado.txt", "w", encoding="utf-8") as archivo:
+            for nombre, data in self.concurso.jurado.items():
+                archivo.write(f"{nombre};{data['especialidad']}\n")
+
+    def registro_puntaje(self, nombre_jurado, codigo_candidata):
+        print(f"Registrando puntuajes de {nombre_jurado} para candidata {codigo_candidata}")
+        try:
+            cultura = int(input("Puntaje cultura: "))
+            proyeccion = int(input("Puntaje proyecciones: "))
+            entrevista = int(input("Puntaje entrevista: "))
+            self.concurso.agregar_puntaje(nombre_jurado, codigo_candidata, cultura, proyeccion, entrevista)
+        except ValueError:
+            print("Error: ingrese solo números enteros para los puntajes.")
 
 class Calificacion:
     def __init__(self,jurado,candidata, cultura,proyeccion,entrevista):
@@ -174,7 +182,7 @@ class Ordenamiento:
         iguales = [b for b in candidata[1:] if b[1] == pivote[1]]
         menores = [b for b in candidata[1:] if b[1] < pivote[1]]
 
-        return self.quick_sort(menores) + [pivote] + iguales + self.quick_sort(mayores)
+        return self.quick_sort(mayores) + [pivote] + iguales + self.quick_sort(menores)
 
 class ConcursoApp:
     def __init__(self):
@@ -183,6 +191,9 @@ class ConcursoApp:
         self.ventana.geometry("500x300")
 
         self.menu()
+        self.concurso = Concurso()
+        self.gestion_candidata = GestionCandidata(self.concurso)
+        self.gestion_jurado = Jurado(self.concurso)
 
         tk.Label(
             self.ventana,
